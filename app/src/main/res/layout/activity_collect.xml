@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_collect"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.softpo.myteacyclopedia.CollectActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:id="@+id/collectHead"
+        >
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/collectBack"
+            android:gravity="center"
+            android:background="@mipmap/searchbackbtn"
+            android:onClick="back"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:id="@+id/searchText"
+            android:text="我的收藏"
+            android:textSize="20sp"
+            android:gravity="center"
+            />
+        <Button
+            android:id="@+id/collectBackHome"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40sp"
+            android:background="@mipmap/righttopbutton"
+            android:onClick="back"
+            />
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_below="@id/collectHead"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="1dp"
+        android:id="@+id/listView"
+        ></ListView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/empty"
+        android:text="无数据"
+        android:textColor="#f00"
+        android:layout_centerInParent="true"
+        />
+</RelativeLayout>

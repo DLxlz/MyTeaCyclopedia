@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_guid"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.softpo.myteacyclopedia.GuidActivity">
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/viewPager"
+        ></android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:layout_alignBottom="@id/viewPager"
+        >
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            ></LinearLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            >
+            <ImageView
+                android:id="@+id/currenPoint1"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/point_selector"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="30dp"
+                />
+            <ImageView
+                android:layout_toRightOf="@id/currenPoint1"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/currenPoint2"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/point_selector"
+                android:layout_centerVertical="true"
+                />
+            <ImageView
+                android:layout_toRightOf="@id/currenPoint2"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/currenPoint3"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/point_selector"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            ></LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

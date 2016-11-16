@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                tools:context="com.softpo.myteacyclopedia.fragments.ItemFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="1dp"
+        android:id="@+id/listView"
+        app:ptrHeaderTextColor="#00f"
+        app:ptrShowIndicator="true"
+        app:ptrAnimationStyle="flip"
+        ></com.handmark.pulltorefresh.library.PullToRefreshListView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/empty"
+        android:text="无数据"
+        android:textColor="#f00"
+        android:layout_centerInParent="true"
+        />
+    <ImageView
+        android:id="@+id/backTopImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/lv_backtotop"
+        android:layout_alignBottom="@id/listView"
+        android:layout_alignRight="@id/listView"
+        android:layout_marginBottom="5dp"
+        />
+
+</RelativeLayout>

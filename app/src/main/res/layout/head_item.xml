@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="150dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:orientation="horizontal"
+        android:background="#4d4a4a"
+        android:id="@+id/backView"
+        />
+    <android.support.v4.view.ViewPager
+        android:layout_below="@id/backView"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:id="@+id/vp"
+        ></android.support.v4.view.ViewPager>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal"
+        android:layout_alignBottom="@+id/vp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:background="#9ccc"
+            >
+            <TextView
+                android:id="@+id/headTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:text="茶百科android更新"
+                android:textSize="10sp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical"
+                />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/point1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="10dp"
+                    android:src="@drawable/point_selector"
+                    android:layout_centerVertical="true"
+                    />
+                <ImageView
+                    android:id="@+id/point2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="8dp"
+                    android:src="@drawable/point_selector"
+                    android:layout_centerVertical="true"
+                    />
+
+                <ImageView
+                    android:id="@+id/point3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="8dp"
+                    android:src="@drawable/point_selector"
+                    android:layout_centerVertical="true"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
