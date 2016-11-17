@@ -271,7 +271,7 @@ public class ItemFragment extends Fragment {
     }
 
     private void initData(String paths) {
-        HttpUtils.getBytes(paths,mHandler);
+        HttpUtils.getBytes(paths,mHandler,getContext());
 
 
     }

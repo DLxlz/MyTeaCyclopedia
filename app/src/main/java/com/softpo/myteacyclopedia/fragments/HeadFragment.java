@@ -1,6 +1,7 @@
 package com.softpo.myteacyclopedia.fragments;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,12 +35,15 @@ import com.softpo.myteacyclopedia.ItemContentActivity;
 import com.softpo.myteacyclopedia.R;
 import com.softpo.myteacyclopedia.adapters.MyAdapter;
 import com.softpo.myteacyclopedia.adapters.ViewPageAdapter;
+import com.softpo.myteacyclopedia.cache.MyLruCache;
 import com.softpo.myteacyclopedia.entitys.HeadImg;
 import com.softpo.myteacyclopedia.entitys.Tea;
 import com.softpo.myteacyclopedia.urls.Urls;
 import com.softpo.myteacyclopedia.utils.HttpUtils;
 import com.softpo.myteacyclopedia.utils.JsonTools;
+import com.softpo.myteacyclopedia.utils.SdCardUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,6 +109,7 @@ public class HeadFragment extends Fragment {
     private ListView listView;
     private String[] mPaths;
     private ImageView[] mPoints;
+    private MyLruCache myLruCache=new MyLruCache((int) (Runtime.getRuntime().maxMemory()/8));
 
 
     public HeadFragment() {
@@ -163,13 +168,13 @@ public class HeadFragment extends Fragment {
                                 mPaths[i]=imgPaths.getData().get(i).getImage_s();
                                 mHeadTitles[i]=imgPaths.getData().get(i).getTitle();
                             }
-                            initHeadData(mPaths);
+                            initHeadData(mPaths,getContext());
                         }
 
                         break;
                 }
             }
-        });
+        },getContext());
 
     }
 
@@ -424,46 +429,87 @@ public class HeadFragment extends Fragment {
     }
 
     //头布局
-    private void initHeadData(String[] paths) {
+    private void initHeadData(String[] paths, final Context context) {
         for (int i = 0; i < paths.length; i++) {
             Log.d("flag", "----------->initListView:头布局路径" +paths[i]);
 
             //获取头布局图片
-            HttpUtils.getBytes(paths[i],new Handler(){
-                @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-                    switch (msg.what){
-                        case 0:
-                            byte[] bitmapByte= (byte[]) msg.obj;
+            //从缓存中获取数据
+            Bitmap cacheBitmap = getCache(paths[i]);
+            if(cacheBitmap!=null){
+                ImageView imageView=new ImageView(getContext());
+                imageView.setImageBitmap(cacheBitmap);
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
-                            Log.d("flag", "----------->initListView:mybitMAP==="+bitmapByte.length);
+                mImageViews.add(imageView);
+                initData(path+page);
+            }else {
+                HttpUtils.getBytes(paths[i],new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        switch (msg.what){
+                            case 0:
+                                byte[] bitmapByte= (byte[]) msg.obj;
 
-                            if (bitmapByte != null) {
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapByte, 0, bitmapByte.length);
-                                Log.d("flag", "----------->handleMessage:bitmap" +bitmap.toString());
+                                Log.d("flag", "----------->initListView:mybitMAP==="+bitmapByte.length);
 
-                                ImageView imageView=new ImageView(getContext());
-                                imageView.setImageBitmap(bitmap);
-                                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                                if (bitmapByte != null) {
+                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapByte, 0, bitmapByte.length);
+                                    Log.d("flag", "----------->handleMessage:bitmap" +bitmap.toString());
 
-                                mImageViews.add(imageView);
-                            }
-                            initData(path+page);
+                                    ImageView imageView=new ImageView(getContext());
+                                    imageView.setImageBitmap(bitmap);
+                                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
-                            break;
+                                    mImageViews.add(imageView);
+
+                                }
+                                //将数据存入磁盘中
+                                String root=context.getExternalCacheDir().getAbsolutePath();
+                                SdCardUtil.saveFile(bitmapByte,root,path.replaceAll("/",""));
+
+                                initData(path+page);
+
+                                break;
+                        }
                     }
-                }
-            });
+                },getContext());
+
+            }
+
+
 
         }
 
     }
 
+    //从缓存中获取数据
+    private Bitmap getCache(String img){
+        img=img.replaceAll("/","");
+        Bitmap bitmap = myLruCache.get(img);
+        if(bitmap!=null){
+            return bitmap;
+        }else {//内存中没有从磁盘中取数据
+            String root=getContext().getExternalCacheDir().getAbsolutePath();
+            String fileName=root+ File.separator+img;
+            byte[] bytes= SdCardUtil.pickFromSdCard(fileName);
+            if(bytes!=null){
+                Bitmap bitmapSd=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                //将磁盘中的数据保存到内存中
+                myLruCache.put(img,bitmapSd);
+                return bitmapSd;
+            }
+        }
+
+        return null;
+    }
+
 
     //2、联网请求获取数据
     private void initData(String sPath) {
-        HttpUtils.getBytes(sPath,mHandler);
+
+        HttpUtils.getBytes(sPath,mHandler,getContext());
 
     }
 

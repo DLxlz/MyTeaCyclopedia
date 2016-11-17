@@ -132,7 +132,7 @@ public class MyAdapter extends BaseAdapter{
 
                 }
             }
-        });
+        },context);
 
 
     }

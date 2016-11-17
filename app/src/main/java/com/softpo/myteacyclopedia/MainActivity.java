@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager.setAdapter(adapter);
 
+        //fragment切换动画
         mViewPager.setPageTransformer(true,new RotateUpTransformer());
 
     }
