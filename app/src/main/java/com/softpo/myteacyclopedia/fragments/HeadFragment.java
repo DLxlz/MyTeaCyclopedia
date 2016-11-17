@@ -244,6 +244,7 @@ public class HeadFragment extends Fragment {
                                     View itemView = listView.getChildAt(i);
                                     if(itemView.getTop()>=current) {
                                         itemView.setAnimation(trans);
+                                        trans.start();
                                     }
                                 }
                                 adapter.notifyDataSetChanged();

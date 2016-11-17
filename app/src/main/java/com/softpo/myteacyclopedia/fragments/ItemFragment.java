@@ -33,6 +33,8 @@ import com.softpo.myteacyclopedia.utils.JsonTools;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.softpo.myteacyclopedia.R.id.listView;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -122,7 +124,6 @@ public class ItemFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-
                         final TranslateAnimation translate = new TranslateAnimation(
                                 Animation.RELATIVE_TO_SELF, 0
                                 , Animation.RELATIVE_TO_SELF, -1
@@ -138,6 +139,8 @@ public class ItemFragment extends Fragment {
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
+                                //listView.removeView(view);
+                                //data.clear();
 
 
                                 data.get(0).getData().remove(position-1);
@@ -148,12 +151,13 @@ public class ItemFragment extends Fragment {
                                         ,Animation.RELATIVE_TO_SELF,1
                                         ,Animation.RELATIVE_TO_SELF,0);
                                 trans.setDuration(1000);
-                                int count = mListView.getChildCount();
+                                int count = mListView.getRefreshableView().getChildCount();
                                 int current = view.getTop();
                                 for(int i=0;i<count;i++){
-                                    View itemView = mListView.getChildAt(i);
+                                    View itemView = mListView.getRefreshableView().getChildAt(i);
                                     if(itemView.getTop()>=current) {
                                         itemView.setAnimation(trans);
+
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
@@ -273,7 +277,7 @@ public class ItemFragment extends Fragment {
     }
 
     private void initView(View ret) {
-        mListView = (PullToRefreshListView) ret.findViewById(R.id.listView);
+        mListView = (PullToRefreshListView) ret.findViewById(listView);
 
         backTopImg = (ImageView) ret.findViewById(R.id.backTopImg);
 
