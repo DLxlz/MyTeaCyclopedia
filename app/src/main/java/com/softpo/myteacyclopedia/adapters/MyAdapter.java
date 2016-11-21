@@ -1,10 +1,6 @@
 package com.softpo.myteacyclopedia.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.softpo.myteacyclopedia.R;
 import com.softpo.myteacyclopedia.cache.MyLruCache;
 import com.softpo.myteacyclopedia.entitys.Tea;
-import com.softpo.myteacyclopedia.utils.HttpUtils;
-import com.softpo.myteacyclopedia.utils.SdCardUtil;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -84,20 +78,26 @@ public class MyAdapter extends BaseAdapter{
 
         if(!dataBean.getWap_thumb().equals("")){
             holder.thumb.setVisibility(View.VISIBLE);
+//
+//            final String path=dataBean.getWap_thumb();
+//            Bitmap bitmap=Bitmap.createBitmap(100,100, Bitmap.Config.ARGB_4444);
+//            holder.thumb.setImageBitmap(bitmap);
+//
+//            //从缓存中获取数据
+//            Bitmap cacheBitmap = getCache(path);
+//
+//            if(cacheBitmap!=null){
+//                holder.thumb.setImageBitmap(cacheBitmap);
+//            }else {//第三级网络获取数据
+//                holder.thumb.setTag(dataBean.getWap_thumb());
+//                getImage(path,holder.thumb);
+//            }
 
-            final String path=dataBean.getWap_thumb();
-            Bitmap bitmap=Bitmap.createBitmap(100,100, Bitmap.Config.ARGB_4444);
-            holder.thumb.setImageBitmap(bitmap);
+            Glide
+                    .with(context)
+                    .load(dataBean.getWap_thumb())
+                    .into(holder.thumb);
 
-            //从缓存中获取数据
-            Bitmap cacheBitmap = getCache(path);
-
-            if(cacheBitmap!=null){
-                holder.thumb.setImageBitmap(cacheBitmap);
-            }else {//第三级网络获取数据
-                holder.thumb.setTag(dataBean.getWap_thumb());
-                getImage(path,holder.thumb);
-            }
 
         }else {
             holder.thumb.setVisibility(View.GONE);
@@ -107,56 +107,56 @@ public class MyAdapter extends BaseAdapter{
     }
 
     //从网络获取缓存
-    private void getImage(final String path, final ImageView imageView){
-
-        HttpUtils.getBytes(path,new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what){
-                    case 0:
-                        String tag = (String) imageView.getTag();
-                        if(tag.equals(path)){
-                            byte[] bytes= (byte[]) msg.obj;
-                            Bitmap imgBitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                            imageView.setImageBitmap(imgBitmap);
-
-                            //将数据存储到内存中
-                            myLruCache.put(path.replaceAll("/",""),imgBitmap);
-
-                            //将数据存入磁盘中
-                            String root=context.getExternalCacheDir().getAbsolutePath();
-                            SdCardUtil.saveFile(bytes,root,path.replaceAll("/",""));
-
-                        }
-
-                }
-            }
-        },context);
-
-
-    }
-
-    //从缓存中获取数据
-    private Bitmap getCache(String img){
-        img=img.replaceAll("/","");
-        Bitmap bitmap = myLruCache.get(img);
-        if(bitmap!=null){
-            return bitmap;
-        }else {//内存中没有从磁盘中取数据
-            String root=context.getExternalCacheDir().getAbsolutePath();
-            String fileName=root+ File.separator+img;
-            byte[] bytes= SdCardUtil.pickFromSdCard(fileName);
-            if(bytes!=null){
-                Bitmap bitmapSd=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                //将磁盘中的数据保存到内存中
-                myLruCache.put(img,bitmapSd);
-                return bitmapSd;
-            }
-        }
-
-        return null;
-    }
+//    private void getImage(final String path, final ImageView imageView){
+//
+//        HttpUtils.getBytes(path,new Handler(){
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                switch (msg.what){
+//                    case 0:
+//                        String tag = (String) imageView.getTag();
+//                        if(tag.equals(path)){
+//                            byte[] bytes= (byte[]) msg.obj;
+//                            Bitmap imgBitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+//                            imageView.setImageBitmap(imgBitmap);
+//
+//                            //将数据存储到内存中
+//                            myLruCache.put(path.replaceAll("/",""),imgBitmap);
+//
+//                            //将数据存入磁盘中
+//                            String root=context.getExternalCacheDir().getAbsolutePath();
+//                            SdCardUtil.saveFile(bytes,root,path.replaceAll("/",""));
+//
+//                        }
+//
+//                }
+//            }
+//        },context);
+//
+//
+//    }
+//
+//    //从缓存中获取数据
+//    private Bitmap getCache(String img){
+//        img=img.replaceAll("/","");
+//        Bitmap bitmap = myLruCache.get(img);
+//        if(bitmap!=null){
+//            return bitmap;
+//        }else {//内存中没有从磁盘中取数据
+//            String root=context.getExternalCacheDir().getAbsolutePath();
+//            String fileName=root+ File.separator+img;
+//            byte[] bytes= SdCardUtil.pickFromSdCard(fileName);
+//            if(bytes!=null){
+//                Bitmap bitmapSd=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+//                //将磁盘中的数据保存到内存中
+//                myLruCache.put(img,bitmapSd);
+//                return bitmapSd;
+//            }
+//        }
+//
+//        return null;
+//    }
 
 
     private static class ViewHolder{

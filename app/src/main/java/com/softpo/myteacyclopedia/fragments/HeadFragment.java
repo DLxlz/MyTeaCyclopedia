@@ -4,8 +4,6 @@ package com.softpo.myteacyclopedia.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,9 +39,8 @@ import com.softpo.myteacyclopedia.entitys.Tea;
 import com.softpo.myteacyclopedia.urls.Urls;
 import com.softpo.myteacyclopedia.utils.HttpUtils;
 import com.softpo.myteacyclopedia.utils.JsonTools;
-import com.softpo.myteacyclopedia.utils.SdCardUtil;
+import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -307,7 +304,6 @@ public class HeadFragment extends Fragment {
                     if (bytes != null) {
                         Tea tea = JsonTools.loadString(new String(bytes));
                         data.add(tea);
-//                        adapter.notifyDataSetChanged();
 
 
                         //刷新停止
@@ -335,29 +331,29 @@ public class HeadFragment extends Fragment {
         }
     };
 
-    private void initHeadViewPager() {
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mPoints[index].setEnabled(true);
-                index = position;
-                mPoints[position].setEnabled(false);
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-
-    }
+//    private void initHeadViewPager() {
+//        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                mPoints[index].setEnabled(true);
+//                index = position;
+//                mPoints[position].setEnabled(false);
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
+//
+//
+//    }
 
     //设置适配器
     private void initListView(final List<Tea> data) {
@@ -435,75 +431,82 @@ public class HeadFragment extends Fragment {
 
             //获取头布局图片
             //从缓存中获取数据
-            Bitmap cacheBitmap = getCache(paths[i]);
-            if(cacheBitmap!=null){
-                ImageView imageView=new ImageView(getContext());
-                imageView.setImageBitmap(cacheBitmap);
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//            Bitmap cacheBitmap = getCache(paths[i]);
+//            if(cacheBitmap!=null){
+//                ImageView imageView=new ImageView(getContext());
+//                imageView.setImageBitmap(cacheBitmap);
+//                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//
+//                mImageViews.add(imageView);
+//                initData(path+page);
+//            }else {
+//                HttpUtils.getBytes(paths[i],new Handler(){
+//                    @Override
+//                    public void handleMessage(Message msg) {
+//                        super.handleMessage(msg);
+//                        switch (msg.what){
+//                            case 0:
+//                                byte[] bitmapByte= (byte[]) msg.obj;
+//
+//                                Log.d("flag", "----------->initListView:mybitMAP==="+bitmapByte.length);
+//
+//                                if (bitmapByte != null) {
+//                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapByte, 0, bitmapByte.length);
+//                                    Log.d("flag", "----------->handleMessage:bitmap" +bitmap.toString());
+//
+//                                    ImageView imageView=new ImageView(getContext());
+//                                    imageView.setImageBitmap(bitmap);
+//                                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//
+//                                    mImageViews.add(imageView);
+//
+//                                }
+//                                //将数据存入磁盘中
+//                                String root=context.getExternalCacheDir().getAbsolutePath();
+//                                SdCardUtil.saveFile(bitmapByte,root,path.replaceAll("/",""));
+//
+//                                initData(path+page);
+//
+//                                break;
+//                        }
+//                    }
+//                },getContext());
+//
+//            }
+            ImageView imageView=new ImageView(getContext());
+            Picasso
+                    .with(context)
+                    .load(paths[i])
+                    .into(imageView);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
-                mImageViews.add(imageView);
-                initData(path+page);
-            }else {
-                HttpUtils.getBytes(paths[i],new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        switch (msg.what){
-                            case 0:
-                                byte[] bitmapByte= (byte[]) msg.obj;
+            mImageViews.add(imageView);
 
-                                Log.d("flag", "----------->initListView:mybitMAP==="+bitmapByte.length);
-
-                                if (bitmapByte != null) {
-                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapByte, 0, bitmapByte.length);
-                                    Log.d("flag", "----------->handleMessage:bitmap" +bitmap.toString());
-
-                                    ImageView imageView=new ImageView(getContext());
-                                    imageView.setImageBitmap(bitmap);
-                                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-
-                                    mImageViews.add(imageView);
-
-                                }
-                                //将数据存入磁盘中
-                                String root=context.getExternalCacheDir().getAbsolutePath();
-                                SdCardUtil.saveFile(bitmapByte,root,path.replaceAll("/",""));
-
-                                initData(path+page);
-
-                                break;
-                        }
-                    }
-                },getContext());
-
-            }
-
-
-
+            initData(path+page);
         }
 
     }
 
-    //从缓存中获取数据
-    private Bitmap getCache(String img){
-        img=img.replaceAll("/","");
-        Bitmap bitmap = myLruCache.get(img);
-        if(bitmap!=null){
-            return bitmap;
-        }else {//内存中没有从磁盘中取数据
-            String root=getContext().getExternalCacheDir().getAbsolutePath();
-            String fileName=root+ File.separator+img;
-            byte[] bytes= SdCardUtil.pickFromSdCard(fileName);
-            if(bytes!=null){
-                Bitmap bitmapSd=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                //将磁盘中的数据保存到内存中
-                myLruCache.put(img,bitmapSd);
-                return bitmapSd;
-            }
-        }
-
-        return null;
-    }
+//    //从缓存中获取数据
+//    private Bitmap getCache(String img){
+//        img=img.replaceAll("/","");
+//        Bitmap bitmap = myLruCache.get(img);
+//        if(bitmap!=null){
+//            return bitmap;
+//        }else {//内存中没有从磁盘中取数据
+//            String root=getContext().getExternalCacheDir().getAbsolutePath();
+//            String fileName=root+ File.separator+img;
+//            byte[] bytes= SdCardUtil.pickFromSdCard(fileName);
+//            if(bytes!=null){
+//                Bitmap bitmapSd=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+//                //将磁盘中的数据保存到内存中
+//                myLruCache.put(img,bitmapSd);
+//                return bitmapSd;
+//            }
+//        }
+//
+//        return null;
+//    }
 
 
     //2、联网请求获取数据
